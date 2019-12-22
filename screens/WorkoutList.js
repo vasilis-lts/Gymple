@@ -8,6 +8,7 @@ import {
   StatusBar,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import firestore from '@react-native-firebase/firestore';
 
 const DATA = [
   {
@@ -27,7 +28,38 @@ const WorkoutList = ({navigation}) => {
 
   useEffect(() => {
     storeDataToAsyncStorage();
+
+    // getDatabase();
   }, []);
+
+  const getDatabase = async () => {
+    //
+    // Read the users documents
+    const querySnapshot = await firestore()
+      .collection('workouts')
+      .doc('MG0birRAbwVFUaHZWmng98sAt203')
+      .get();
+
+    const workoutArray = [...Object.values(querySnapshot.data())];
+
+    console.log(workoutArray);
+  };
+
+  const writeDatabase = () => {
+    firestore()
+      .collection('workouts')
+      .doc('MG0birRAbwVFUaHZWmng98sAt203')
+      .set({
+        1: 'Ώμοι',
+        2: 'Στήθος',
+      })
+      .then(function(docRef) {
+        console.log('Document written with ID: ', docRef);
+      })
+      .catch(function(error) {
+        console.log('Error adding document: ', error);
+      });
+  };
 
   const storeDataToAsyncStorage = async () => {
     try {

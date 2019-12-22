@@ -14,15 +14,17 @@ import {createStackNavigator} from 'react-navigation-stack';
 import WorkoutList from './screens/WorkoutList';
 import DailyWorkoutForm from './screens/DailyWorkoutForm';
 import CreateWorkoutWizard from './screens/CreateWorkoutWizard';
+import LoadingScreen from './screens/LoadingScreen';
 
 const RootStack = createStackNavigator(
   {
+    LoadingScreen: LoadingScreen,
     WorkoutList: WorkoutList,
     DailyWorkoutForm: DailyWorkoutForm,
     CreateWorkoutWizard: CreateWorkoutWizard,
   },
   {
-    initialRouteName: 'WorkoutList',
+    initialRouteName: 'LoadingScreen',
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: '#f4511e',
