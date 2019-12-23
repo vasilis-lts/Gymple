@@ -21,7 +21,10 @@ const CreateWorkoutForm = ({navigation}) => {
   const [WizardStep, setWizardStep] = useState(1);
 
   useEffect(() => {
-    //
+    console.log('mounting workout wizard');
+    return () => {
+      // console.log('unmounting workout wizard');
+    };
   }, []);
 
   const muscleGroupsHandler = selection => {
@@ -45,6 +48,10 @@ const CreateWorkoutForm = ({navigation}) => {
 
   const wizardHandler = step => {
     setWizardStep(step);
+  };
+
+  const goToAddExercise = el => {
+    navigation.navigate('AddExerciseScreen', {muscleGroup: el});
   };
 
   return (
@@ -126,7 +133,14 @@ const CreateWorkoutForm = ({navigation}) => {
             {MuscleGroupsSelected.map((el, index) => {
               return (
                 <View key={el}>
-                  <ExercisesForm title={el} />
+                  <ExercisesForm
+                    title={el}
+                    goToAddExercise={() => goToAddExercise(el)}
+                  />
+                  {/* <TouchableHighlight
+                    onPress={() => navigation.navigate('AddExerciseScreen')}>
+                    <Text>Add +</Text>
+                  </TouchableHighlight> */}
                 </View>
               );
             })}

@@ -85,20 +85,13 @@ const ExercisesForm = props => {
                 <Text style={styles.AddExerciseBtnTxt}>X</Text>
               </TouchableOpacity>
             </View>
-            <TextInput
-              style={styles.Input}
-              value={FormValues[item.index].Name}
-              onChangeText={text => handleInputChange(text, item.index, 'Name')}
-              placeholder="Enter a name for the exercise"
-              placeholderTextColor={Colors.Gray}
-            />
           </View>
         )}
         keyExtractor={item => `${item.index}`}
       />
       <TouchableOpacity
         style={styles.AddExerciseBtn}
-        onPress={() => addExercise()}>
+        onPress={() => props.goToAddExercise()}>
         <Text style={styles.AddExerciseBtnTxt}>Add +</Text>
       </TouchableOpacity>
     </View>
@@ -106,9 +99,10 @@ const ExercisesForm = props => {
 };
 
 const styles = StyleSheet.create({
+  AddExerciseBtn: {paddingVertical: 10},
   AddExerciseBtnTxt: {color: Colors.White, fontSize: 20},
   ExerciseItem: {
-    paddingVertical: 2,
+    paddingVertical: 10,
     borderBottomColor: '#fff',
     borderBottomWidth: 1,
   },

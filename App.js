@@ -15,16 +15,18 @@ import WorkoutList from './screens/WorkoutList';
 import DailyWorkoutForm from './screens/DailyWorkoutForm';
 import CreateWorkoutWizard from './screens/CreateWorkoutWizard';
 import LoadingScreen from './screens/LoadingScreen';
+import AddExerciseScreen from './screens/AddExerciseScreen';
 
 const RootStack = createStackNavigator(
   {
-    LoadingScreen: LoadingScreen,
-    WorkoutList: WorkoutList,
+    WorkoutList: {screen: WorkoutList},
     DailyWorkoutForm: DailyWorkoutForm,
     CreateWorkoutWizard: CreateWorkoutWizard,
+    LoadingScreen: LoadingScreen,
+    AddExerciseScreen: AddExerciseScreen,
   },
   {
-    initialRouteName: 'LoadingScreen',
+    initialRouteName: 'CreateWorkoutWizard',
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: '#f4511e',
