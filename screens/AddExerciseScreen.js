@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
   View,
+  Button,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -12,7 +13,19 @@ import {Colors} from '../Colors';
 const AddExerciseScreen = ({navigation}) => {
   const [WizardStep, setWizardStep] = useState(1);
   const [ExerciseName, onChangeExerciseName] = useState('');
-  const [Language, setLanguage] = useState('js');
+  const [KnownExercisePicker, setKnownExercisePicker] = useState(
+    'Select (Empty)',
+  );
+
+  const defaultExercises = {
+    Chest: [
+      'Barbell Bench Press',
+      'Inclined Barbell Bench Press',
+      'Dumbell Bench Press',
+      'Inclined Dumbell Bench Press',
+      'Pec-Deck',
+    ],
+  };
 
   useEffect(() => {
     // console.log('mounting add exercise screen');
@@ -21,18 +34,27 @@ const AddExerciseScreen = ({navigation}) => {
     };
   }, []);
 
+  const updateExerciseName = value => {
+    value === 'Select (Empty)'
+      ? onChangeExerciseName('')
+      : onChangeExerciseName(value);
+
+    setKnownExercisePicker(value);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View>
         <Text style={{color: Colors.White, textAlign: 'center', fontSize: 24}}>
-          Add {navigation.getParam('muscleGroup')} Exercise
+          {WizardStep === 1 && 'Enter a name for the Exercise'}
+          {WizardStep === 2 && 'Select Sets, Reps and Weights'}
         </Text>
       </View>
       <View style={styles.formContainer}>
         {WizardStep === 1 && (
           <>
             <View>
-              <Text style={styles.label}>Enter a name for the exercise</Text>
+              <Text style={styles.label}>Exercise name:</Text>
               <TextInput
                 style={{
                   height: 40,
@@ -45,28 +67,72 @@ const AddExerciseScreen = ({navigation}) => {
             </View>
             <View style={{marginTop: 40}}>
               <Text style={{color: Colors.White, fontSize: 16}}>
-                ...but first check if we already have a similar name!
+                ...but first check if we already have it!
               </Text>
               <Text
                 style={{
                   color: Colors.White,
                   fontSize: 16,
-                }}>{`(selecting an exercise will put it in the field above)`}</Text>
+                }}>{`(Selecting will update the above field)`}</Text>
+
+              <Text
+                style={{
+                  color: Colors.White,
+                  fontSize: 16,
+                  marginTop: 50,
+                }}>
+                Select Exercise!
+              </Text>
               <Picker
-                selectedValue={Language}
+                selectedValue={KnownExercisePicker}
                 style={{
                   height: 50,
-                  marginTop: 50,
+                  marginTop: 5,
                   backgroundColor: Colors.White,
                 }}
                 onValueChange={(itemValue, itemIndex) =>
-                  setLanguage(itemValue)
+                  updateExerciseName(itemValue)
                 }>
-                <Picker.Item label="Java" value="java" />
-                <Picker.Item label="JavaScript" value="js" />
+                <Picker.Item label="Select (Empty)" value="Select (Empty)" />
+                {defaultExercises.Chest.map(el => {
+                  return <Picker.Item key={el} label={el} value={el} />;
+                })}
               </Picker>
+
+              <View style={[styles.wizardBtnContainer]}>
+                <Button
+                  title="Next Step"
+                  disabled={ExerciseName === '' ? true : false}
+                  onPress={() => setWizardStep(2)}
+                />
+              </View>
             </View>
           </>
+        )}
+
+        {WizardStep === 2 && (
+          <View>
+            <View>
+              <TextInput keyboardType="numeric" />
+            </View>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              }}>
+              <Button
+                style={styles.wizardBtn}
+                title="Previous Step"
+                onPress={() => setWizardStep(1)}
+              />
+              <Button
+                style={styles.wizardBtn}
+                title="Next Step"
+                onPress={() => setWizardStep(3)}
+              />
+            </View>
+          </View>
         )}
       </View>
     </SafeAreaView>
@@ -85,6 +151,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     color: Colors.White,
   },
+  wizardBtnContainer: {
+    marginTop: 20,
+  },
+
   formContainer: {
     marginTop: 30,
     paddingHorizontal: 10,
