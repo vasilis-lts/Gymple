@@ -9,6 +9,7 @@ import {
   Picker,
 } from 'react-native';
 import {Colors} from '../Colors';
+import NumberInput from '../components/NumberInput';
 
 const AddExerciseScreen = ({navigation}) => {
   const [WizardStep, setWizardStep] = useState(1);
@@ -113,7 +114,7 @@ const AddExerciseScreen = ({navigation}) => {
         {WizardStep === 2 && (
           <View>
             <View>
-              <TextInput keyboardType="numeric" />
+              <NumberInput value={2} />
             </View>
             <View
               style={{
