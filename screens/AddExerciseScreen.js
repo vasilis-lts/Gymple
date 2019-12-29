@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {Colors} from '../Colors';
 import NumberInput from '../components/NumberInput';
+import SetForm from '../components/SetForm';
 
 const AddExerciseScreen = ({navigation}) => {
   const [WizardStep, setWizardStep] = useState(1);
@@ -48,7 +49,7 @@ const AddExerciseScreen = ({navigation}) => {
       <View>
         <Text style={{color: Colors.White, textAlign: 'center', fontSize: 24}}>
           {WizardStep === 1 && 'Enter a name for the Exercise'}
-          {WizardStep === 2 && 'Select Sets, Reps and Weights'}
+          {WizardStep === 2 && 'Add Sets, Reps and Weights'}
         </Text>
       </View>
       <View style={styles.formContainer}>
@@ -114,13 +115,26 @@ const AddExerciseScreen = ({navigation}) => {
         {WizardStep === 2 && (
           <View>
             <View>
-              <NumberInput value={2} />
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingBottom: 5,
+                  borderBottomColor: Colors.Gray,
+                  borderBottomWidth: 2,
+                }}>
+                <Text style={[{width: '20%'}, styles.gridHeader]}>Set #</Text>
+                <Text style={[{width: '40%'}, styles.gridHeader]}>Reps</Text>
+                <Text style={[{width: '40%'}, styles.gridHeader]}>Weights</Text>
+              </View>
+              <SetForm Reps={6} Weights={60} />
             </View>
             <View
               style={{
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
+                marginTop: 20,
               }}>
               <Button
                 style={styles.wizardBtn}
@@ -155,7 +169,10 @@ const styles = StyleSheet.create({
   wizardBtnContainer: {
     marginTop: 20,
   },
-
+  gridHeader: {
+    color: 'white',
+    fontSize: 20,
+  },
   formContainer: {
     marginTop: 30,
     paddingHorizontal: 10,

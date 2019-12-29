@@ -73,7 +73,7 @@ const NumberInput = props => {
         returnKeyType="done"
         style={[
           styles.inputStyle,
-          {width: 40, fontSize: 16, textAlign: 'center'},
+          {width: 40, fontSize: 16, textAlign: 'center', padding: 0},
         ]}
         value={`${InputValue}`}
         selectTextOnFocus
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   numberInputContainer: {
     display: 'flex',
     flexDirection: 'row',
-    height: 40,
+    height: 35,
   },
   inputStyle: {
     backgroundColor: 'white',
