@@ -10,7 +10,6 @@ import {
   ScrollView,
 } from 'react-native';
 import {Colors} from '../Colors';
-import NumberInput from '../components/NumberInput';
 import SetForm from '../components/SetForm';
 
 const AddExerciseScreen = ({navigation}) => {
@@ -19,6 +18,7 @@ const AddExerciseScreen = ({navigation}) => {
   const [KnownExercisePicker, setKnownExercisePicker] = useState(
     'Select (Empty)',
   );
+  const [ExerciseNotes, setExerciseNotes] = useState('');
 
   const defaultExercises = {
     Chest: [
@@ -59,6 +59,7 @@ const AddExerciseScreen = ({navigation}) => {
             style={{color: Colors.White, textAlign: 'center', fontSize: 24}}>
             {WizardStep === 1 && 'Enter a name for the Exercise'}
             {WizardStep === 2 && 'Add Sets, Reps and Weights'}
+            {WizardStep === 3 && 'Notes for the exercise (optional)'}
           </Text>
         </View>
         <View style={styles.formContainer}>
@@ -123,22 +124,52 @@ const AddExerciseScreen = ({navigation}) => {
 
           {WizardStep === 2 && (
             <View>
-              <View>
-                <View
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    paddingBottom: 5,
-                    borderBottomColor: Colors.Gray,
-                    borderBottomWidth: 2,
-                  }}>
-                  <Text style={[{width: '20%'}, styles.gridHeader]}>Set #</Text>
-                  <Text style={[{width: '40%'}, styles.gridHeader]}>Reps</Text>
-                  <Text style={[{width: '40%'}, styles.gridHeader]}>
-                    Weights
-                  </Text>
-                </View>
-                <SetForm goBack={() => setWizardStep(1)} saveSets={saveSets} />
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  paddingBottom: 5,
+                  borderBottomColor: Colors.Gray,
+                  borderBottomWidth: 2,
+                }}>
+                <Text style={[{width: '20%'}, styles.gridHeader]}>Set #</Text>
+                <Text style={[{width: '40%'}, styles.gridHeader]}>Reps</Text>
+                <Text style={[{width: '40%'}, styles.gridHeader]}>Weights</Text>
+              </View>
+              <SetForm goBack={() => setWizardStep(1)} saveSets={saveSets} />
+            </View>
+          )}
+
+          {WizardStep === 3 && (
+            <View>
+              <Text style={styles.label}>Exercise Notes:</Text>
+              <TextInput
+                onChangeText={text => setExerciseNotes(text)}
+                multiline={true}
+                numberOfLines={8}
+                value={ExerciseNotes}
+                style={{
+                  backgroundColor: Colors.White,
+                  textAlignVertical: 'top',
+                }}
+              />
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginTop: 20,
+                }}>
+                <Button
+                  style={styles.wizardBtn}
+                  title="Previous Step"
+                  onPress={() => setWizardStep(2)}
+                />
+                <Button
+                  style={styles.wizardBtn}
+                  title="Save Exercise"
+                  onPress={() => setShowDoneModal()}
+                />
               </View>
             </View>
           )}
