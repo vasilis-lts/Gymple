@@ -8,8 +8,8 @@ import {
   TextInput,
   Picker,
 } from 'react-native';
-import PropTypes from 'prop-types';
 import {Colors} from '../Colors';
+import {TouchableHighlight} from 'react-native-gesture-handler';
 
 const SetForm = props => {
   const textInputWidth = 55;
@@ -19,10 +19,16 @@ const SetForm = props => {
     WEIGHTS: 'Weights',
   };
 
-  const [RepsValue, setRepsValue] = useState('8');
-  const [WeightsValue, setWeightsValue] = useState('50');
+  const [RepsValue, setRepsValue] = useState('');
+  const [WeightsValue, setWeightsValue] = useState('');
   const [LastValidValue, setLastValidValue] = useState('');
   const [FocusedInputName, setFocusedInputName] = useState('');
+  const [FocusedIndex, setFocusedIndex] = useState(0);
+
+  const [formData, setformData] = useState([
+    {SetNumber: 1, Reps: 10, Weights: 50},
+  ]);
+  let defaultSet = {Reps: 8, Weights: 60};
 
   useEffect(() => {
     initValues();
@@ -33,8 +39,18 @@ const SetForm = props => {
   }, []);
 
   const initValues = () => {
-    setRepsValue(`${props[InputNames.REPS]}`);
-    setWeightsValue(`${props[InputNames.WEIGHTS]}`);
+    // setRepsValue(`${props[InputNames.REPS]}`);
+    // setWeightsValue(`${props[InputNames.WEIGHTS]}`);
+  };
+
+  const onFocusInput = (inputName, value, index) => {
+    setFocusedInputName(inputName);
+    setFocusedIndex(index);
+
+    inputName === InputNames.REPS
+      ? setRepsValue(value)
+      : setWeightsValue(value);
+    setLastValidValue(value);
   };
 
   const onChangeValue = (value, inputName) => {
@@ -43,95 +59,144 @@ const SetForm = props => {
       : setWeightsValue(value);
   };
 
-  const onFocusInput = inputName => {
-    setFocusedInputName(inputName);
-    inputName === InputNames.REPS
-      ? setLastValidValue(RepsValue)
-      : setLastValidValue(WeightsValue);
-  };
+  const onBlurInput = (inputName, index) => {
+    setFocusedInputName('');
+    let value;
 
-  const onBlurInput = inputName => {
     console.log('Blurred ' + inputName);
     if (inputName === InputNames.REPS) {
-      const _repsValue = parseInt(RepsValue, 10);
+      value = parseInt(RepsValue, 10);
 
-      isNaN(_repsValue)
+      isNaN(value)
         ? setRepsValue(`${LastValidValue}`)
-        : setRepsValue(`${_repsValue}`);
+        : setRepsValue(`${value}`);
     } else if (inputName === 'Weights') {
-      const _weightsValue = parseFloat(WeightsValue, 10);
+      value = parseFloat(WeightsValue, 10);
 
-      isNaN(_weightsValue)
+      isNaN(value)
         ? setWeightsValue(`${LastValidValue}`)
-        : setWeightsValue(`${_weightsValue}`);
+        : setWeightsValue(`${value}`);
     }
 
-    console.log({
-      Reps: parseInt(RepsValue, 10),
-      Weights: parseFloat(WeightsValue, 10),
-    });
+    updateGrid(index, inputName, value);
+  };
+
+  const updateGrid = (index, inputName, value) => {
+    const clonedData = [...formData];
+    clonedData[index][inputName] = value;
+    setformData(clonedData);
+  };
+
+  const addSet = () => {
+    const clonedData = [...formData];
+    defaultSet.SetNumber = formData.length + 1;
+    clonedData.push(defaultSet);
+    setformData(clonedData);
+  };
+
+  const saveSets = () => {
+    props.saveSets(formData);
   };
 
   return (
-    <View style={styles.setFormContainer}>
-      <View
-        style={{
-          width: '20%',
+    <View>
+      {formData.map((el, index) => {
+        return (
+          <View key={el.SetNumber} style={styles.setFormContainer}>
+            <View
+              style={{
+                width: '20%',
 
-          // backgroundColor: 'red',
-        }}>
-        <TextInput
-          editable={false}
-          style={{
-            // backgroundColor: 'white',
-            color: 'white',
-            fontSize: 18,
-          }}>
-          1.
-        </TextInput>
-      </View>
-      <View
-        style={{
-          width: '40%',
-          // backgroundColor: 'green'
-        }}>
-        <TextInput
-          keyboardType="numeric"
-          selectTextOnFocus
-          onFocus={() => onFocusInput(InputNames.REPS)}
-          onChangeText={text => onChangeValue(text, InputNames.REPS)}
-          onBlur={() => onBlurInput(InputNames.REPS)}
-          style={{
-            width: textInputWidth,
-            textAlign: 'center',
-            backgroundColor: 'white',
-            fontSize: 18,
-          }}
-          value={RepsValue}
+                // backgroundColor: 'red',
+              }}>
+              <TextInput
+                editable={false}
+                style={{
+                  // backgroundColor: 'white',
+                  color: 'white',
+                  fontSize: 18,
+                }}>
+                {el.SetNumber}.
+              </TextInput>
+            </View>
+            <View
+              style={{
+                width: '40%',
+                // backgroundColor: 'green'
+              }}>
+              <TextInput
+                keyboardType="numeric"
+                selectTextOnFocus
+                onFocus={() => onFocusInput(InputNames.REPS, el.Reps, index)}
+                onChangeText={text => onChangeValue(text, InputNames.REPS)}
+                onBlur={() => onBlurInput(InputNames.REPS, index)}
+                style={{
+                  width: textInputWidth,
+                  textAlign: 'center',
+                  backgroundColor: 'white',
+                  fontSize: 18,
+                }}
+                value={`${
+                  FocusedIndex === index && FocusedInputName === InputNames.REPS
+                    ? RepsValue
+                    : el.Reps
+                }`}
+              />
+            </View>
+            <View
+              style={{
+                width: '40%',
+                // backgroundColor: 'blue'
+              }}>
+              <TextInput
+                keyboardType="numeric"
+                selectTextOnFocus
+                onFocus={text =>
+                  onFocusInput(InputNames.WEIGHTS, el.Weights, index)
+                }
+                onChangeText={text => onChangeValue(text, InputNames.WEIGHTS)}
+                onBlur={() => onBlurInput(InputNames.WEIGHTS, index)}
+                style={{
+                  width: textInputWidth,
+                  textAlign: 'center',
+                  backgroundColor: 'white',
+                  fontSize: 18,
+                }}
+                value={`${
+                  FocusedIndex === index &&
+                  FocusedInputName === InputNames.WEIGHTS
+                    ? WeightsValue
+                    : el.Weights
+                }`}
+              />
+            </View>
+          </View>
+        );
+      })}
+      <View style={{paddingVertical: 15}}>
+        <Button
+          title="Add set"
+          style={{backgroundColor: 'red'}}
+          onPress={() => addSet()}
         />
       </View>
       <View
         style={{
-          width: '40%',
-          // backgroundColor: 'blue'
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          marginTop: 20,
         }}>
-        <TextInput
-          keyboardType="numeric"
-          selectTextOnFocus
-          onFocus={() => onFocusInput(InputNames.WEIGHTS)}
-          onChangeText={text => onChangeValue(text, InputNames.WEIGHTS)}
-          onBlur={() => onBlurInput(InputNames.WEIGHTS)}
-          style={{
-            width: textInputWidth,
-            textAlign: 'center',
-            backgroundColor: 'white',
-            fontSize: 18,
-          }}
-          value={WeightsValue}
+        <Button
+          style={styles.wizardBtn}
+          title="Previous Step"
+          onPress={() => props.goBack()}
         />
-      </View>
-      <View>
-        <Text>Add +</Text>
+        <Button
+          style={styles.wizardBtn}
+          title="Next Step"
+          onPress={() => saveSets()}
+        />
       </View>
     </View>
   );
@@ -145,10 +210,5 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
 });
-
-SetForm.propTypes = {
-  Reps: PropTypes.number.isRequired,
-  Weights: PropTypes.number.isRequired,
-};
 
 export default SetForm;

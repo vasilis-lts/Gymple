@@ -7,6 +7,7 @@ import {
   Text,
   TextInput,
   Picker,
+  ScrollView,
 } from 'react-native';
 import {Colors} from '../Colors';
 import NumberInput from '../components/NumberInput';
@@ -44,112 +45,105 @@ const AddExerciseScreen = ({navigation}) => {
     setKnownExercisePicker(value);
   };
 
+  const saveSets = sets => {
+    setWizardStep(3);
+    console.log('Added sets');
+    console.log(sets);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View>
-        <Text style={{color: Colors.White, textAlign: 'center', fontSize: 24}}>
-          {WizardStep === 1 && 'Enter a name for the Exercise'}
-          {WizardStep === 2 && 'Add Sets, Reps and Weights'}
-        </Text>
-      </View>
-      <View style={styles.formContainer}>
-        {WizardStep === 1 && (
-          <>
-            <View>
-              <Text style={styles.label}>Exercise name:</Text>
-              <TextInput
-                style={{
-                  height: 40,
-                  backgroundColor: Colors.White,
-                  color: '#000',
-                }}
-                onChangeText={text => onChangeExerciseName(text)}
-                value={ExerciseName}
-              />
-            </View>
-            <View style={{marginTop: 40}}>
-              <Text style={{color: Colors.White, fontSize: 16}}>
-                ...but first check if we already have it!
-              </Text>
-              <Text
-                style={{
-                  color: Colors.White,
-                  fontSize: 16,
-                }}>{`(Selecting will update the above field)`}</Text>
-
-              <Text
-                style={{
-                  color: Colors.White,
-                  fontSize: 16,
-                  marginTop: 50,
-                }}>
-                Select Exercise!
-              </Text>
-              <Picker
-                selectedValue={KnownExercisePicker}
-                style={{
-                  height: 50,
-                  marginTop: 5,
-                  backgroundColor: Colors.White,
-                }}
-                onValueChange={(itemValue, itemIndex) =>
-                  updateExerciseName(itemValue)
-                }>
-                <Picker.Item label="Select (Empty)" value="Select (Empty)" />
-                {defaultExercises.Chest.map(el => {
-                  return <Picker.Item key={el} label={el} value={el} />;
-                })}
-              </Picker>
-
-              <View style={[styles.wizardBtnContainer]}>
-                <Button
-                  title="Next Step"
-                  disabled={ExerciseName === '' ? true : false}
-                  onPress={() => setWizardStep(2)}
+      <ScrollView>
+        <View>
+          <Text
+            style={{color: Colors.White, textAlign: 'center', fontSize: 24}}>
+            {WizardStep === 1 && 'Enter a name for the Exercise'}
+            {WizardStep === 2 && 'Add Sets, Reps and Weights'}
+          </Text>
+        </View>
+        <View style={styles.formContainer}>
+          {WizardStep === 1 && (
+            <>
+              <View>
+                <Text style={styles.label}>Exercise name:</Text>
+                <TextInput
+                  style={{
+                    height: 40,
+                    backgroundColor: Colors.White,
+                    color: '#000',
+                  }}
+                  onChangeText={text => onChangeExerciseName(text)}
+                  value={ExerciseName}
                 />
               </View>
-            </View>
-          </>
-        )}
+              <View style={{marginTop: 40}}>
+                <Text style={{color: Colors.White, fontSize: 16}}>
+                  ...but first check if we already have it!
+                </Text>
+                <Text
+                  style={{
+                    color: Colors.White,
+                    fontSize: 16,
+                  }}>{`(Selecting will update the above field)`}</Text>
 
-        {WizardStep === 2 && (
-          <View>
-            <View>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  paddingBottom: 5,
-                  borderBottomColor: Colors.Gray,
-                  borderBottomWidth: 2,
-                }}>
-                <Text style={[{width: '20%'}, styles.gridHeader]}>Set #</Text>
-                <Text style={[{width: '40%'}, styles.gridHeader]}>Reps</Text>
-                <Text style={[{width: '40%'}, styles.gridHeader]}>Weights</Text>
+                <Text
+                  style={{
+                    color: Colors.White,
+                    fontSize: 16,
+                    marginTop: 50,
+                  }}>
+                  Select Exercise!
+                </Text>
+                <Picker
+                  selectedValue={KnownExercisePicker}
+                  style={{
+                    height: 50,
+                    marginTop: 5,
+                    backgroundColor: Colors.White,
+                  }}
+                  onValueChange={(itemValue, itemIndex) =>
+                    updateExerciseName(itemValue)
+                  }>
+                  <Picker.Item label="Select (Empty)" value="Select (Empty)" />
+                  {defaultExercises.Chest.map(el => {
+                    return <Picker.Item key={el} label={el} value={el} />;
+                  })}
+                </Picker>
+
+                <View style={[styles.wizardBtnContainer]}>
+                  <Button
+                    title="Next Step"
+                    disabled={ExerciseName === '' ? true : false}
+                    onPress={() => setWizardStep(2)}
+                  />
+                </View>
               </View>
-              <SetForm Reps={6} Weights={60} />
+            </>
+          )}
+
+          {WizardStep === 2 && (
+            <View>
+              <View>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    paddingBottom: 5,
+                    borderBottomColor: Colors.Gray,
+                    borderBottomWidth: 2,
+                  }}>
+                  <Text style={[{width: '20%'}, styles.gridHeader]}>Set #</Text>
+                  <Text style={[{width: '40%'}, styles.gridHeader]}>Reps</Text>
+                  <Text style={[{width: '40%'}, styles.gridHeader]}>
+                    Weights
+                  </Text>
+                </View>
+                <SetForm goBack={() => setWizardStep(1)} saveSets={saveSets} />
+              </View>
             </View>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 20,
-              }}>
-              <Button
-                style={styles.wizardBtn}
-                title="Previous Step"
-                onPress={() => setWizardStep(1)}
-              />
-              <Button
-                style={styles.wizardBtn}
-                title="Next Step"
-                onPress={() => setWizardStep(3)}
-              />
-            </View>
-          </View>
-        )}
-      </View>
+          )}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
