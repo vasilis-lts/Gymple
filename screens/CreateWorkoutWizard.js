@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {Colors} from '../Colors';
 import ExercisesForm from '../components/ExercisesForm';
+import {getAsyncStorageItem} from '../AsyncStorage';
 
 const MuscleGroups = ['Chest', 'Back', 'Biceps', 'Triceps', 'Legs', 'Abs'];
 
@@ -22,10 +23,22 @@ const CreateWorkoutForm = ({navigation}) => {
 
   useEffect(() => {
     console.log('mounting workout wizard');
+    getExercises();
     return () => {
-      // console.log('unmounting workout wizard');
+      console.log('unmounting workout wizard');
     };
   }, []);
+
+  const getExercises = async () => {
+    const getResponse = await getAsyncStorageItem('Exercises');
+    if (getResponse) {
+      console.log('Get Exercises');
+      const exercisesArr = [...JSON.parse(getResponse)];
+      console.log(exercisesArr);
+    } else {
+      console.log('Could not get Item');
+    }
+  };
 
   const muscleGroupsHandler = selection => {
     let _muscleGroupsSelected = [...MuscleGroupsSelected];

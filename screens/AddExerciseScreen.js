@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   View,
   Button,
   SafeAreaView,
@@ -11,13 +12,17 @@ import {
 } from 'react-native';
 import {Colors} from '../Colors';
 import SetForm from '../components/SetForm';
+import AsyncStorage from '@react-native-community/async-storage';
+import {getAsyncStorageItem, setAsyncStorageItem} from '../AsyncStorage';
 
 const AddExerciseScreen = ({navigation}) => {
   const [WizardStep, setWizardStep] = useState(1);
+  const [MuscleGroup, setMuscleGroup] = useState('');
   const [ExerciseName, onChangeExerciseName] = useState('');
   const [KnownExercisePicker, setKnownExercisePicker] = useState(
     'Select (Empty)',
   );
+  const [SetsDraft, setSetsDraft] = useState([]);
   const [ExerciseNotes, setExerciseNotes] = useState('');
 
   const defaultExercises = {
@@ -32,6 +37,9 @@ const AddExerciseScreen = ({navigation}) => {
 
   useEffect(() => {
     // console.log('mounting add exercise screen');
+    const muscleGroup = navigation.getParam('muscleGroup');
+    console.log(muscleGroup);
+    setMuscleGroup(muscleGroup);
     return () => {
       // console.log('unmounting add exercise screen');
     };
@@ -45,10 +53,59 @@ const AddExerciseScreen = ({navigation}) => {
     setKnownExercisePicker(value);
   };
 
-  const saveSets = sets => {
+  const saveSetsDraft = sets => {
     setWizardStep(3);
     console.log('Added sets');
     console.log(sets);
+    const _SetsDraft = [...sets];
+    setSetsDraft(_SetsDraft);
+  };
+
+  const showDialog = () => {
+    Alert.alert(
+      'Confirmation',
+      'Save this exercise?',
+      [
+        // {
+        //   text: 'Ask me later',
+        //   onPress: () => console.log('Ask me later pressed'),
+        // },
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'Yes', onPress: () => saveExercise()},
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const saveExercise = async () => {
+    let exerciseObj = {
+      MuscleGroup,
+      ExerciseName,
+      ExerciseSets: SetsDraft,
+      ExerciseNotes,
+    };
+
+    console.log('Exercise Details:');
+    console.log(exerciseObj);
+
+    const getResponse = await getAsyncStorageItem('Exercises');
+    if (getResponse) {
+      const exercisesArr = [...JSON.parse(getResponse)];
+      exercisesArr.push(exerciseObj);
+
+      const setResponse = await setAsyncStorageItem('Exercises', exercisesArr);
+      if (setResponse === 'success') {
+        navigation.goBack();
+      } else {
+        console.log(setResponse);
+      }
+    } else {
+      console.log('Could not get Item');
+    }
   };
 
   return (
@@ -136,7 +193,10 @@ const AddExerciseScreen = ({navigation}) => {
                 <Text style={[{width: '40%'}, styles.gridHeader]}>Reps</Text>
                 <Text style={[{width: '40%'}, styles.gridHeader]}>Weights</Text>
               </View>
-              <SetForm goBack={() => setWizardStep(1)} saveSets={saveSets} />
+              <SetForm
+                goBack={() => setWizardStep(1)}
+                saveSetsDraft={saveSetsDraft}
+              />
             </View>
           )}
 
@@ -162,13 +222,13 @@ const AddExerciseScreen = ({navigation}) => {
                 }}>
                 <Button
                   style={styles.wizardBtn}
-                  title="Previous Step"
+                  title="Back to sets"
                   onPress={() => setWizardStep(2)}
                 />
                 <Button
                   style={styles.wizardBtn}
                   title="Save Exercise"
-                  onPress={() => setShowDoneModal()}
+                  onPress={() => showDialog()}
                 />
               </View>
             </View>

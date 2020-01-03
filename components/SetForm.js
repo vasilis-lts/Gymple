@@ -94,8 +94,13 @@ const SetForm = props => {
     setformData(clonedData);
   };
 
-  const saveSets = () => {
-    props.saveSets(formData);
+  const saveSetsDraft = () => {
+    props.saveSetsDraft(formData);
+  };
+
+  const goBack = () => {
+    props.goBack();
+    // saveSetsDraft();
   };
 
   return (
@@ -190,12 +195,12 @@ const SetForm = props => {
         <Button
           style={styles.wizardBtn}
           title="Previous Step"
-          onPress={() => props.goBack()}
+          onPress={() => goBack()}
         />
         <Button
           style={styles.wizardBtn}
           title="Next Step"
-          onPress={() => saveSets()}
+          onPress={() => saveSetsDraft()}
         />
       </View>
     </View>
