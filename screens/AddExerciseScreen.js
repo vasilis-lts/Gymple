@@ -84,9 +84,9 @@ const AddExerciseScreen = ({navigation}) => {
   const saveExercise = async () => {
     let exerciseObj = {
       MuscleGroup,
-      ExerciseName,
-      ExerciseSets: SetsDraft,
-      ExerciseNotes,
+      Name,
+      Sets: SetsDraft,
+      Notes,
     };
 
     console.log('Exercise Details:');
@@ -110,7 +110,7 @@ const AddExerciseScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView>
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View>
           <Text
             style={{color: Colors.White, textAlign: 'center', fontSize: 24}}>

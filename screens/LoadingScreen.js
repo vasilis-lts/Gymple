@@ -8,7 +8,10 @@ import {
   StatusBar,
 } from 'react-native';
 import firebase from '../Firebase.js';
+
+import {NavigationActions, StackActions} from 'react-navigation';
 import auth from '@react-native-firebase/auth';
+import {initMockStorage, getAllStorageKeys} from '../AsyncStorage.js';
 
 export default function LoadingScreen({navigation}) {
   // Set an initializing state whilst Firebase connects
@@ -22,10 +25,6 @@ export default function LoadingScreen({navigation}) {
       setUser(user.email);
 
       console.log(user);
-
-      setTimeout(() => {
-        navigation.navigate('WorkoutList');
-      }, 2000);
     }
     if (initializing) setInitializing(false);
   }
@@ -40,12 +39,25 @@ export default function LoadingScreen({navigation}) {
     };
   }, []);
 
+  const initAppData = async () => {
+    initMockStorage();
+
+    // reset stack and navigate
+    const resetAction = StackActions.reset({
+      index: 0,
+      actions: [NavigationActions.navigate({routeName: 'WorkoutList'})],
+    });
+
+    navigation.dispatch(resetAction);
+  };
+
   const signIn = async () => {
     try {
       await auth().signInWithEmailAndPassword(
         'bill.litsas@gmail.com',
         'bill123',
       );
+      initAppData();
     } catch (e) {
       console.log(e.message);
     }

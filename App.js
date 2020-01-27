@@ -8,16 +8,17 @@
 
 // import auth from '@react-native-firebase/auth';
 
-import React, {useEffect} from 'react';
-import {createAppContainer} from 'react-navigation';
+import React from 'react';
+import {createAppContainer, ThemeColors} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
 import WorkoutList from './screens/WorkoutList';
 import DailyWorkoutForm from './screens/DailyWorkoutForm';
 import CreateWorkoutWizard from './screens/CreateWorkoutWizard';
 import LoadingScreen from './screens/LoadingScreen';
 import AddExerciseScreen from './screens/AddExerciseScreen';
-
-import {initMockStorage, getAllStorageKeys} from './AsyncStorage';
+import WorkoutMuscleGroupsScreen from './screens/WorkoutMuscleGroupsScreen';
+import ViewExercisesScreen from './screens/ViewExercisesScreen';
+import ExerciseDetails from './screens/ExerciseDetails';
 
 const RootStack = createStackNavigator(
   {
@@ -26,12 +27,15 @@ const RootStack = createStackNavigator(
     CreateWorkoutWizard: CreateWorkoutWizard,
     LoadingScreen: LoadingScreen,
     AddExerciseScreen: AddExerciseScreen,
+    WorkoutMuscleGroupsScreen: WorkoutMuscleGroupsScreen,
+    ViewExercisesScreen: ViewExercisesScreen,
+    ExerciseDetails: ExerciseDetails,
   },
   {
-    initialRouteName: 'CreateWorkoutWizard',
+    initialRouteName: 'LoadingScreen',
     defaultNavigationOptions: {
       headerStyle: {
-        backgroundColor: '#f4511e',
+        backgroundColor: ThemeColors.dark.bodyContent,
       },
       headerTintColor: '#fff',
       headerTitleStyle: {
@@ -47,22 +51,6 @@ const RootStack = createStackNavigator(
 const AppContainer = createAppContainer(RootStack);
 
 const App = () => {
-  useEffect(() => {
-    initApp();
-
-    return () => {
-      // cleanup
-    };
-  }, []);
-
-  const initApp = async () => {
-    initMockStorage();
-    console.log('Async Storage:');
-    console.log('--------------');
-    await getAllStorageKeys();
-    console.log('--------------');
-  };
-
   return <AppContainer />;
 };
 export default App;

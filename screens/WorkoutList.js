@@ -6,20 +6,11 @@ import {
   View,
   Text,
   StatusBar,
+  ScrollView,
+  TouchableOpacity,
 } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage';
 import firestore from '@react-native-firebase/firestore';
-
-const DATA = [
-  {
-    id: '1',
-    title: 'Chest',
-  },
-  {
-    id: '2',
-    title: 'Πόδια',
-  },
-];
+import {getAsyncStorageItem} from '../AsyncStorage';
 
 let testFunc;
 
@@ -27,10 +18,16 @@ const WorkoutList = ({navigation}) => {
   const [Data, setData] = useState([]);
 
   useEffect(() => {
-    storeDataToAsyncStorage();
+    getWorkouts();
 
     // getDatabase();
   }, []);
+
+  const getWorkouts = async () => {
+    const workouts = await getAsyncStorageItem('Workouts');
+    console.log(workouts);
+    setData(workouts);
+  };
 
   const getDatabase = async () => {
     //
@@ -61,55 +58,41 @@ const WorkoutList = ({navigation}) => {
       });
   };
 
-  const storeDataToAsyncStorage = async () => {
-    try {
-      await AsyncStorage.setItem('Tasks', JSON.stringify(DATA));
-      retrieveData();
-    } catch (error) {
-      // Error saving data
-      alert('Error saving data');
-    }
-  };
-
-  const retrieveData = async () => {
-    try {
-      const data = await AsyncStorage.getItem('Tasks');
-      if (data !== null) {
-        // We have data!!
-        setData(JSON.parse(data));
-      }
-    } catch (error) {
-      // Error retrieving data
-    }
-  };
-
   testFunc = () => {
     navigation.navigate('CreateWorkoutWizard');
+  };
+
+  const goToWorkoutMuscleGroups = id => {
+    navigation.push('WorkoutMuscleGroupsScreen', {
+      WorkoutId: id,
+    });
   };
 
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.container}>
-        <FlatList
-          data={Data}
-          renderItem={({item}) => (
-            <View style={styles.item}>
-              <Text style={styles.title}>{item.title}</Text>
-            </View>
-          )}
-          keyExtractor={item => item.id}
-        />
+        <ScrollView keyExtractor={item => `${item.id}`}>
+          {Data.map(item => (
+            <TouchableOpacity
+              // onPress={() => alert('pressed!')}
+              key={`${item.id}`}
+              style={styles.item}
+              onPress={() => goToWorkoutMuscleGroups(item.id)}>
+              <Text style={styles.Name}>{item.Name}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </SafeAreaView>
     </>
   );
 };
 
 WorkoutList.navigationOptions = {
-  title: 'Home',
+  title: 'Your Workouts',
   headerRight: () => (
-    <Text style={{marginRight: 10}} onPress={() => testFunc()}>
-      New
+    <Text style={{marginRight: 10, color: 'white'}} onPress={() => testFunc()}>
+      Add New
     </Text>
   ),
 };
@@ -119,13 +102,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    backgroundColor: '#00f',
+    backgroundColor: 'black',
     padding: 20,
     marginTop: 2,
     marginHorizontal: 2,
   },
 
-  title: {
+  Name: {
     fontSize: 32,
     color: '#0f9',
   },
