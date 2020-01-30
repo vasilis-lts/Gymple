@@ -17,7 +17,7 @@ export const initMockStorage = async () => {
           MuscleGroup: 'Chest',
           Name: 'Pec-Deck',
           Notes: 'Pec Deck Notes here',
-          Sets: [{SetNumber: 1, Reps: 10, Weights: 50}],
+          Sets: [{SetNumber: 1, Reps: 10, WeightsKg: 50}],
         },
         {
           id: 2,
@@ -25,7 +25,7 @@ export const initMockStorage = async () => {
           MuscleGroup: 'Back',
           Name: 'Lat Machine',
           Notes: 'Lat Machine Notes',
-          Sets: [{SetNumber: 1, Reps: 10, Weights: 50}],
+          Sets: [{SetNumber: 1, Reps: 10, WeightsKg: 50}],
         },
         {
           id: 3,
@@ -34,9 +34,9 @@ export const initMockStorage = async () => {
           Name: 'Pec-Deck',
           Notes: 'Notes here',
           Sets: [
-            {SetNumber: 1, Reps: 8, Weights: 50},
-            {SetNumber: 2, Reps: 6, Weights: 60},
-            {SetNumber: 3, Reps: 6, Weights: 60},
+            {SetNumber: 1, Reps: 8, WeightsKg: 50},
+            {SetNumber: 2, Reps: 6, WeightsKg: 60},
+            {SetNumber: 3, Reps: 6, WeightsKg: 60},
           ],
         },
       ]),
