@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
-  FlatList,
+  Button,
   SafeAreaView,
   StyleSheet,
   View,
@@ -15,11 +15,6 @@ import useEditableGrid from '../hooks/useEditableGrid';
 
 let saveChanges;
 
-const users = [
-  {id: '1', name: 'Bill', points: '20'},
-  {id: '2', name: 'Stevy', points: '20'},
-  {id: '3', name: 'Thomas', points: '30'},
-];
 const columns = {
   SetNumber: {width: 30, header: '#'},
   Reps: {width: 70, header: 'Reps'},
@@ -29,9 +24,6 @@ const columns = {
 const ExerciseDetails = ({navigation}) => {
   const [Exercise, setExercise] = useState({});
   const [ExerciseSets, setExerciseSets] = useState([]);
-  const indexWidth = 30;
-  const repsWidth = 80;
-  const weightsWidth = 140;
 
   //
   const submitChanges = values => {
@@ -39,10 +31,27 @@ const ExerciseDetails = ({navigation}) => {
 
     setExerciseSets(values);
   };
+
+  const deleteRow = index => {
+    const _ExerciseSets = [...ExerciseSets];
+    _ExerciseSets.splice(index, 1);
+    const fixedArr = fixSetNumbersArr(_ExerciseSets);
+    setExerciseSets(fixedArr);
+  };
+
+  const fixSetNumbersArr = arr => {
+    arr.forEach((exercise, index) => {
+      exercise.SetNumber = index + 1;
+    });
+    let fixedArr = [...arr];
+    return fixedArr;
+  };
+
   const [grid, handleSubmit, Values] = useEditableGrid(
     ExerciseSets,
     submitChanges,
     columns,
+    deleteRow,
   );
 
   useEffect(() => {
@@ -55,7 +64,6 @@ const ExerciseDetails = ({navigation}) => {
 
   const getExercise = () => {
     const _Exercise = navigation.getParam('Exercise');
-    console.log(_Exercise);
 
     if (_Exercise) {
       setExercise(_Exercise);
@@ -63,8 +71,15 @@ const ExerciseDetails = ({navigation}) => {
     }
   };
 
-  const onChangeField = e => {
-    console.log(e);
+  const addSet = () => {
+    const _ExerciseSets = [...ExerciseSets];
+    const arrLength = _ExerciseSets.length;
+    _ExerciseSets.push({
+      SetNumber: arrLength + 1,
+      Reps: ExerciseSets[ExerciseSets.length - 1].Reps,
+      WeightsKg: ExerciseSets[ExerciseSets.length - 1].WeightsKg,
+    });
+    setExerciseSets(_ExerciseSets);
   };
 
   saveChanges = () => {
@@ -84,7 +99,11 @@ const ExerciseDetails = ({navigation}) => {
               <View>
                 <Text style={styles.sectionHeader}>Sets:</Text>
               </View>
+
               <View style={{padding: 10}}>{grid}</View>
+              <View style={{width: 100, marginLeft: 10}}>
+                <Button title="Add Set" onPress={() => addSet()} />
+              </View>
               <View>
                 <Text style={{...styles.sectionHeader, marginTop: 20}}>
                   Notes:

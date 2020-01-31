@@ -1,14 +1,22 @@
 import React, {useState, useEffect} from 'react';
-import {View, TextInput} from 'react-native';
+import {Button, Text, View, TextInput, TouchableHighlight} from 'react-native';
 import {Colors} from '../Colors';
+import {Icon} from 'react-native-elements';
 
 let FocusFieldValue = '';
 let _Values = [];
 
-function useEditableGrid(data, submitCallback, columns, saveMethod = 'onBlur') {
+function useEditableGrid(
+  data,
+  submitCallback,
+  columns,
+  deleteRow,
+  saveMethod = 'onBlur',
+) {
   const [Elements, setElements] = useState([]);
   const [gridValues, setgridValues] = useState([]);
   const defaultFieldWidth = 70;
+  const deleteActionWidth = 40;
 
   useEffect(() => {
     _Values = data;
@@ -68,6 +76,7 @@ function useEditableGrid(data, submitCallback, columns, saveMethod = 'onBlur') {
                 borderBottomWidth: 1,
                 borderBottomColor: Colors.Gray,
                 textAlign: 'center',
+                paddingVertical: 5,
               }}
               value={`${obj[prop]}` || ''}
               // onFocus={e => onFocusField(e)}
@@ -81,9 +90,44 @@ function useEditableGrid(data, submitCallback, columns, saveMethod = 'onBlur') {
             style={{display: 'flex', flexDirection: 'row'}}
             key={`row${index}`}>
             {row}
+            <View
+              key={`delete-row${index}`}
+              style={{
+                width: deleteActionWidth,
+                borderLeftWidth: 1,
+                borderLeftColor: Colors.Gray,
+                borderBottomWidth: 1,
+                borderBottomColor: Colors.Gray,
+                textAlign: 'center',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Icon
+                name="remove-circle"
+                onPress={() => deleteRow(index)}
+                color={Colors.Red}
+              />
+            </View>
           </View>,
         );
       });
+
+      header.push(
+        <View
+          key={'header-col'}
+          style={{
+            width: deleteActionWidth,
+            backgroundColor: Colors.GrayLight,
+            borderLeftWidth: 1,
+            borderLeftColor: Colors.Gray,
+            borderBottomWidth: 1,
+            borderBottomColor: Colors.Gray,
+            borderRightWidth: 1,
+            borderRightColor: Colors.Gray,
+          }}
+        />,
+      );
 
       setElements(
         <View
@@ -92,7 +136,7 @@ function useEditableGrid(data, submitCallback, columns, saveMethod = 'onBlur') {
             borderTopWidth: 1,
             borderRightColor: Colors.Gray,
             borderRightWidth: 1,
-            width: gridWidth,
+            width: gridWidth + deleteActionWidth,
           }}>
           <View style={{display: 'flex', flexDirection: 'row'}}>{header}</View>
           {_Elements}
