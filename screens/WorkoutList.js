@@ -111,10 +111,8 @@ const WorkoutList = ({navigation}) => {
     //
     const Workouts = await getAsyncStorageItem('Workouts');
     const _Workouts = Workouts.filter(workout => workout.id !== workoutId);
-    console.log(_Workouts);
 
     const res = await setAsyncStorageItem('Workouts', _Workouts);
-    console.log(res);
     if (res === 'success') {
       setData(_Workouts);
     }
