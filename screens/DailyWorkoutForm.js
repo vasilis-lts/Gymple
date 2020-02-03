@@ -8,7 +8,6 @@ import {
   StatusBar,
 } from 'react-native';
 
-// import Icon from 'react-native-vector-icons/FontAwesome';
 import {Header, Button} from 'react-native-elements';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 

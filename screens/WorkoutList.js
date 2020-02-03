@@ -1,21 +1,25 @@
 import React, {useEffect, useState} from 'react';
 import {
-  FlatList,
   SafeAreaView,
   StyleSheet,
-  View,
   Text,
   StatusBar,
   ScrollView,
-  TouchableOpacity,
+  Alert,
+  View,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import firestore from '@react-native-firebase/firestore';
-import {getAsyncStorageItem} from '../AsyncStorage';
+import {getAsyncStorageItem, setAsyncStorageItem} from '../AsyncStorage';
+import DialogModal from '../components/DialogModal';
+import {Colors} from '../Colors';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 let testFunc;
 
 const WorkoutList = ({navigation}) => {
   const [Data, setData] = useState([]);
+  const [showWorkoutModal, setshowWorkoutModal] = useState(false);
 
   useEffect(() => {
     getWorkouts();
@@ -59,7 +63,8 @@ const WorkoutList = ({navigation}) => {
   };
 
   testFunc = () => {
-    navigation.navigate('CreateWorkoutWizard');
+    // navigation.navigate('CreateWorkoutWizard');
+    setshowWorkoutModal(true);
   };
 
   const goToWorkoutMuscleGroups = id => {
@@ -68,20 +73,87 @@ const WorkoutList = ({navigation}) => {
     });
   };
 
+  const submitWorkoutName = async workoutName => {
+    setshowWorkoutModal(false);
+    const Workouts = await getAsyncStorageItem('Workouts');
+    const Id = Workouts[Workouts.length - 1].id + 1;
+    Workouts.push({Name: workoutName, id: Id});
+
+    const res = await setAsyncStorageItem('Workouts', Workouts);
+    console.log(res);
+    if (res === 'success') {
+      setData(Workouts);
+    }
+  };
+
+  const deleteConfirmation = (workoutId, workoutName) => {
+    console.log('delete');
+    Alert.alert(
+      'Delete Confirmation',
+      `Delete ${workoutName} Workout?`,
+      [
+        // {
+        //   text: 'Ask me later',
+        //   onPress: () => console.log('Ask me later pressed'),
+        // },
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'Delete', onPress: () => deleteWorkout(workoutId, workoutName)},
+      ],
+      {cancelable: true},
+    );
+  };
+
+  const deleteWorkout = async (workoutId, workoutName) => {
+    //
+    const Workouts = await getAsyncStorageItem('Workouts');
+    const _Workouts = Workouts.filter(workout => workout.id !== workoutId);
+    console.log(_Workouts);
+
+    const res = await setAsyncStorageItem('Workouts', _Workouts);
+    console.log(res);
+    if (res === 'success') {
+      setData(_Workouts);
+    }
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.container}>
         <ScrollView keyExtractor={item => `${item.id}`}>
           {Data.map(item => (
-            <TouchableOpacity
-              // onPress={() => alert('pressed!')}
+            <TouchableWithoutFeedback
               key={`${item.id}`}
-              style={styles.item}
               onPress={() => goToWorkoutMuscleGroups(item.id)}>
-              <Text style={styles.Name}>{item.Name}</Text>
-            </TouchableOpacity>
+              <View style={styles.item}>
+                <Text style={styles.Name}>{item.Name}</Text>
+                <View
+                  style={{
+                    backgroundColor: Colors.Red,
+                    padding: 5,
+                    borderRadius: 25,
+                  }}>
+                  <Icon
+                    name="delete"
+                    size={25}
+                    color={Colors.White}
+                    onPress={() => deleteConfirmation(item.id, item.Name)}
+                  />
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
           ))}
+
+          <DialogModal
+            title={'Enter a name for the workout:'}
+            visible={showWorkoutModal}
+            onClose={() => setshowWorkoutModal(false)}
+            onAccept={val => submitWorkoutName(val)}
+          />
         </ScrollView>
       </SafeAreaView>
     </>
@@ -103,14 +175,17 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: 'black',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
     marginTop: 2,
     marginHorizontal: 2,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-
   Name: {
-    fontSize: 32,
-    color: '#0f9',
+    fontSize: 22,
+    color: Colors.White,
   },
 });
 
