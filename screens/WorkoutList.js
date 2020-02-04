@@ -14,6 +14,7 @@ import {getAsyncStorageItem, setAsyncStorageItem} from '../AsyncStorage';
 import DialogModal from '../components/DialogModal';
 import {Colors} from '../Colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import WorkoutsController from '../controllers/WorkoutsController';
 
 let testFunc;
 
@@ -28,9 +29,8 @@ const WorkoutList = ({navigation}) => {
   }, []);
 
   const getWorkouts = async () => {
-    const workouts = await getAsyncStorageItem('Workouts');
-    console.log(workouts);
-    setData(workouts);
+    const Workouts = await WorkoutsController.GetWorkouts();
+    setData(Workouts);
   };
 
   const getDatabase = async () => {
@@ -73,16 +73,18 @@ const WorkoutList = ({navigation}) => {
     });
   };
 
-  const submitWorkoutName = async workoutName => {
+  const saveWorkout = async workoutName => {
     setshowWorkoutModal(false);
-    const Workouts = await getAsyncStorageItem('Workouts');
-    const Id = Workouts[Workouts.length - 1].id + 1;
-    Workouts.push({Name: workoutName, id: Id});
 
-    const res = await setAsyncStorageItem('Workouts', Workouts);
-    console.log(res);
-    if (res === 'success') {
+    const Workout = {
+      Name: workoutName,
+    };
+
+    const Workouts = await WorkoutsController.SaveWorkout(Workout);
+    if (Workouts.length) {
       setData(Workouts);
+    } else {
+      setData([]);
     }
   };
 
@@ -109,12 +111,12 @@ const WorkoutList = ({navigation}) => {
 
   const deleteWorkout = async (workoutId, workoutName) => {
     //
-    const Workouts = await getAsyncStorageItem('Workouts');
-    const _Workouts = Workouts.filter(workout => workout.id !== workoutId);
 
-    const res = await setAsyncStorageItem('Workouts', _Workouts);
-    if (res === 'success') {
-      setData(_Workouts);
+    const Workouts = await WorkoutsController.DeleteWorkout(workoutId);
+    if (Workouts.length) {
+      setData(Workouts);
+    } else {
+      setData([]);
     }
   };
 
@@ -123,34 +125,40 @@ const WorkoutList = ({navigation}) => {
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.container}>
         <ScrollView keyExtractor={item => `${item.id}`}>
-          {Data.map(item => (
-            <TouchableWithoutFeedback
-              key={`${item.id}`}
-              onPress={() => goToWorkoutMuscleGroups(item.id)}>
-              <View style={styles.item}>
-                <Text style={styles.Name}>{item.Name}</Text>
-                <View
-                  style={{
-                    backgroundColor: Colors.Red,
-                    padding: 5,
-                    borderRadius: 25,
-                  }}>
-                  <Icon
-                    name="delete"
-                    size={25}
-                    color={Colors.White}
-                    onPress={() => deleteConfirmation(item.id, item.Name)}
-                  />
+          {Data.length ? (
+            Data.map(item => (
+              <TouchableWithoutFeedback
+                key={`${item.id}`}
+                onPress={() => goToWorkoutMuscleGroups(item.id)}>
+                <View style={styles.item}>
+                  <Text style={styles.Name}>{item.Name}</Text>
+                  <View
+                    style={{
+                      backgroundColor: Colors.Red,
+                      padding: 5,
+                      borderRadius: 25,
+                    }}>
+                    <Icon
+                      name="delete"
+                      size={25}
+                      color={Colors.White}
+                      onPress={() => deleteConfirmation(item.id, item.Name)}
+                    />
+                  </View>
                 </View>
-              </View>
-            </TouchableWithoutFeedback>
-          ))}
+              </TouchableWithoutFeedback>
+            ))
+          ) : (
+            <View>
+              <Text>No Workouts! Add a new one!</Text>
+            </View>
+          )}
 
           <DialogModal
             title={'Enter a name for the workout:'}
             visible={showWorkoutModal}
             onClose={() => setshowWorkoutModal(false)}
-            onAccept={val => submitWorkoutName(val)}
+            onAccept={val => saveWorkout(val)}
           />
         </ScrollView>
       </SafeAreaView>
