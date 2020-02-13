@@ -30,6 +30,11 @@ const WorkoutList = ({navigation}) => {
 
   const getWorkouts = async () => {
     const Workouts = await WorkoutsController.GetWorkouts();
+
+    console.log(Workouts);
+
+    // const user = await getAsyncStorageItem('AdminUser');
+    // console.log('Workouts', user.Workouts);
     setData(Workouts);
   };
 
@@ -67,9 +72,9 @@ const WorkoutList = ({navigation}) => {
     setshowWorkoutModal(true);
   };
 
-  const goToWorkoutMuscleGroups = id => {
-    navigation.push('WorkoutMuscleGroupsScreen', {
-      WorkoutId: id,
+  const goToWorkoutSchedule = item => {
+    navigation.push('WorkoutSchedule', {
+      Workout: item,
     });
   };
 
@@ -81,7 +86,9 @@ const WorkoutList = ({navigation}) => {
     };
 
     const Workouts = await WorkoutsController.SaveWorkout(Workout);
+
     if (Workouts.length) {
+      console.log('the workouts', Workouts);
       setData(Workouts);
     } else {
       setData([]);
@@ -109,9 +116,7 @@ const WorkoutList = ({navigation}) => {
     );
   };
 
-  const deleteWorkout = async (workoutId, workoutName) => {
-    //
-
+  const deleteWorkout = async workoutId => {
     const Workouts = await WorkoutsController.DeleteWorkout(workoutId);
     if (Workouts.length) {
       setData(Workouts);
@@ -129,7 +134,7 @@ const WorkoutList = ({navigation}) => {
             Data.map(item => (
               <TouchableWithoutFeedback
                 key={`${item.id}`}
-                onPress={() => goToWorkoutMuscleGroups(item.id)}>
+                onPress={() => goToWorkoutSchedule(item)}>
                 <View style={styles.item}>
                   <Text style={styles.Name}>{item.Name}</Text>
                   <View
@@ -150,7 +155,9 @@ const WorkoutList = ({navigation}) => {
             ))
           ) : (
             <View>
-              <Text>No Workouts! Add a new one!</Text>
+              <Text style={{textAlign: 'center', marginTop: 100}}>
+                You don't have any Workouts! Add a new one!
+              </Text>
             </View>
           )}
 
@@ -170,7 +177,7 @@ WorkoutList.navigationOptions = {
   title: 'Your Workouts',
   headerRight: () => (
     <Text style={{marginRight: 10, color: 'white'}} onPress={() => testFunc()}>
-      Add New
+      Add New Workout
     </Text>
   ),
 };

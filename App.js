@@ -19,6 +19,8 @@ import AddExerciseScreen from './screens/AddExerciseScreen';
 import WorkoutMuscleGroupsScreen from './screens/WorkoutMuscleGroupsScreen';
 import ViewExercisesScreen from './screens/ViewExercisesScreen';
 import ExerciseDetails from './screens/ExerciseDetails';
+import WorkoutSchedule from './screens/WorkoutSchedule';
+import DayRoutine from './screens/DayRoutine';
 
 const RootStack = createStackNavigator(
   {
@@ -30,6 +32,8 @@ const RootStack = createStackNavigator(
     WorkoutMuscleGroupsScreen: WorkoutMuscleGroupsScreen,
     ViewExercisesScreen: ViewExercisesScreen,
     ExerciseDetails: ExerciseDetails,
+    WorkoutSchedule: WorkoutSchedule,
+    DayRoutine: DayRoutine,
   },
   {
     initialRouteName: 'LoadingScreen',

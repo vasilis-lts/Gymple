@@ -1,25 +1,37 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import {getAsyncStorageItem, setAsyncStorageItem} from '../AsyncStorage';
 
 const WorkoutsController = {
   GetWorkouts: async () => {
-    console.log(WorkoutsController);
-    return await getAsyncStorageItem('Workouts');
+    const User = await getAsyncStorageItem('AdminUser');
+    return User.Workouts;
   },
   SaveWorkout: async Workout => {
-    const Workouts = await getAsyncStorageItem('Workouts');
+    const User = await getAsyncStorageItem('AdminUser');
+    const Workouts = User.Workouts;
     Workout.id = Workouts[Workouts.length - 1].id + 1;
     Workouts.push(Workout);
-    const res = await setAsyncStorageItem('Workouts', Workouts);
-    if (res === 'success') {
+    User.Workouts = Workouts;
+
+    try {
+      await AsyncStorage.setItem('AdminUser', JSON.stringify(User));
       return Workouts;
-    } else {
-      return 'error';
+    } catch (error) {
+      return null;
     }
   },
   DeleteWorkout: async workoutId => {
-    const Workouts = await WorkoutsController.GetWorkouts();
+    const User = await getAsyncStorageItem('AdminUser');
+    const Workouts = User.Workouts;
     const _Workouts = Workouts.filter(workout => workout.id !== workoutId);
-    return _Workouts;
+    User.Workouts = _Workouts;
+
+    try {
+      await AsyncStorage.setItem('AdminUser', JSON.stringify(User));
+      return _Workouts;
+    } catch (error) {
+      return null;
+    }
   },
 };
 export default WorkoutsController;
