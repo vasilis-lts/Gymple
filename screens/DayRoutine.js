@@ -11,6 +11,10 @@ import {
 } from 'react-native';
 import {Colors} from '../Colors';
 import ExercisesController from '../controllers/ExercisesController';
+import Panel from '../components/Panel';
+import Collapsible from '../components/Collapsible';
+
+let saveChanges;
 
 function DayRoutine({navigation}) {
   const [DayRoutine, setDayRoutine] = useState([]);
@@ -30,12 +34,17 @@ function DayRoutine({navigation}) {
   const getDaysExercises = async exerciseIds => {
     const Exercises = await ExercisesController.GetExercises();
 
-    console.log('exs ', Exercises);
     const daysExercises = Exercises.filter(exercise =>
       exerciseIds.includes(exercise.Id),
     );
-    console.log(daysExercises);
+
     setdaysExercises(daysExercises);
+
+    console.log(daysExercises[0]);
+  };
+
+  saveChanges = () => {
+    // Save weight changes
   };
 
   return (
@@ -45,14 +54,26 @@ function DayRoutine({navigation}) {
         <ScrollView keyExtractor={item => `${item.Id}`}>
           {daysExercises.length ? (
             daysExercises.map(item => (
-              <TouchableWithoutFeedback
-                key={`${item.Id}`}
-                // onPress={() => goToWorkoutSchedule(item)}
-              >
-                <View style={styles.item}>
-                  <Text style={styles.Name}>{item.Name}</Text>
+              <Collapsible key={item.Id} title={item.Name}>
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={{width: 100}}>SetNo</Text>
+                  <Text style={{width: 100}}>Reps</Text>
+                  <Text style={{width: 100}}>Weight (Kg)</Text>
                 </View>
-              </TouchableWithoutFeedback>
+                {item.Sets.map(set => (
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      paddingVertical: 5,
+                      borderTopColor: Colors.Gray,
+                      borderTopWidth: 1,
+                    }}>
+                    <Text style={{width: 100}}>{set.SetNumber}</Text>
+                    <Text style={{width: 100}}>{set.Reps}</Text>
+                    <Text style={{width: 100}}>{set.WeightsKg}</Text>
+                  </View>
+                ))}
+              </Collapsible>
             ))
           ) : (
             <View style={{marginTop: 100}}>
@@ -67,11 +88,11 @@ function DayRoutine({navigation}) {
 
 DayRoutine.navigationOptions = {
   title: 'Day Routine',
-  // headerRight: () => (
-  //   <Text style={{marginRight: 10, color: 'white'}} onPress={() => testFunc()}>
-  //     Add New DayRoutine
-  //   </Text>
-  // ),
+  headerRight: () => (
+    <Text style={{marginRight: 10, color: 'white'}} onPress={() => testFunc()}>
+      Save Changes
+    </Text>
+  ),
 };
 
 const styles = StyleSheet.create({
