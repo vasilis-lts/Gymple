@@ -69,7 +69,9 @@ export default function LoadingScreen({navigation}) {
       <SafeAreaView style={{flex: 1}}>
         <View style={styles.container}>
           <ActivityIndicator size="large" />
-          <Text style={{fontSize: 24}}>{user ? user : 'Checking auth...'}</Text>
+          <Text style={{fontSize: 24}}>
+            {user ? 'Welcome' : 'Checking auth...'}
+          </Text>
           <Text>{initializing ? 'Initializing' : ''}</Text>
         </View>
       </SafeAreaView>

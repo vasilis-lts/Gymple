@@ -141,6 +141,150 @@ export const initMockStorage = async () => {
             {SetNumber: 3, Reps: 8, WeightsKg: 10},
           ],
         },
+        {
+          Id: 20,
+          Name: 'Deadlift',
+          Sets: [
+            {SetNumber: 1, Reps: 10, WeightsKg: 40},
+            {SetNumber: 2, Reps: 8, WeightsKg: 60},
+            {SetNumber: 3, Reps: 6, WeightsKg: 70},
+          ],
+        },
+        {
+          Id: 21,
+          Name: 'Leg Extension',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 12.5},
+            {SetNumber: 2, Reps: 8, WeightsKg: 12.5},
+            {SetNumber: 3, Reps: 8, WeightsKg: 12.5},
+          ],
+        },
+        {
+          Id: 22,
+          Name: 'Dumbbell Bench Press',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 20},
+            {SetNumber: 2, Reps: 6, WeightsKg: 22},
+            {SetNumber: 3, Reps: 6, WeightsKg: 22},
+          ],
+        },
+        {
+          Id: 23,
+          Name: 'Seated Barbell Press',
+          Sets: [
+            {SetNumber: 1, Reps: 6, WeightsKg: 20},
+            {SetNumber: 2, Reps: 6, WeightsKg: 20},
+            {SetNumber: 3, Reps: 6, WeightsKg: 20},
+          ],
+        },
+        {
+          Id: 24,
+          Name: 'Seated Calf Raise',
+          Sets: [
+            {SetNumber: 1, Reps: 20, WeightsKg: 110},
+            {SetNumber: 2, Reps: 20, WeightsKg: 110},
+          ],
+        },
+        {
+          Id: 25,
+          Name: 'Cable Tricep Extension',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 8},
+            {SetNumber: 2, Reps: 8, WeightsKg: 8},
+          ],
+        },
+        {
+          Id: 26,
+          Name: 'Concentration Curl',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 15},
+            {SetNumber: 2, Reps: 8, WeightsKg: 15},
+          ],
+        },
+        {
+          Id: 27,
+          Name: 'Rear Lateral',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 10},
+            {SetNumber: 2, Reps: 8, WeightsKg: 10},
+          ],
+        },
+        {
+          Id: 28,
+          Name: 'Weighted Leg Raises',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 10},
+            {SetNumber: 2, Reps: 8, WeightsKg: 10},
+          ],
+        },
+        {
+          Id: 40,
+          Name: 'Leg Press',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 110},
+            {SetNumber: 2, Reps: 8, WeightsKg: 110},
+            {SetNumber: 3, Reps: 8, WeightsKg: 110},
+          ],
+        },
+        {
+          Id: 41,
+          Name: 'Barbell Row',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 20},
+            {SetNumber: 2, Reps: 8, WeightsKg: 20},
+            {SetNumber: 3, Reps: 8, WeightsKg: 20},
+          ],
+        },
+        {
+          Id: 42,
+          Name: 'Romanian Deadlift',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 40},
+            {SetNumber: 2, Reps: 8, WeightsKg: 40},
+          ],
+        },
+        {
+          Id: 43,
+          Name: 'Incline Bench Press',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 40},
+            {SetNumber: 2, Reps: 6, WeightsKg: 50},
+            {SetNumber: 3, Reps: 6, WeightsKg: 50},
+          ],
+        },
+        {
+          Id: 44,
+          Name: 'Side Lateral',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 12},
+            {SetNumber: 2, Reps: 8, WeightsKg: 12},
+          ],
+        },
+        {
+          Id: 45,
+          Name: 'Close Grip Push Ups',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 0},
+            {SetNumber: 2, Reps: 8, WeightsKg: 0},
+            {SetNumber: 3, Reps: 8, WeightsKg: 0},
+          ],
+        },
+        {
+          Id: 46,
+          Name: 'Pinwheel Curl',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 15},
+            {SetNumber: 2, Reps: 8, WeightsKg: 15},
+          ],
+        },
+        {
+          Id: 47,
+          Name: 'Dumbbell Shrug',
+          Sets: [
+            {SetNumber: 1, Reps: 8, WeightsKg: 22},
+            {SetNumber: 2, Reps: 8, WeightsKg: 22},
+          ],
+        },
       ]),
     );
     await AsyncStorage.setItem(
@@ -155,8 +299,8 @@ export const initMockStorage = async () => {
       'AdminUser',
       JSON.stringify({
         Workouts: [
-          {id: 1, Name: 'Mass'},
-          {id: 2, Name: '4 days Upper Lower'},
+          // {id: 1, Name: 'Mass'},
+          // {id: 2, Name: '4 days Upper Lower'},
           {
             id: 3,
             Name: 'Total Body',
@@ -165,10 +309,20 @@ export const initMockStorage = async () => {
                 index: 1,
                 DayRoutineId: 1,
                 Day: 'Saturday',
-                ExerciseIds: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+                ExerciseIds: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 28],
               },
-              {index: 2, DayRoutineId: 2, Day: 'Monday'},
-              {index: 3, DayRoutineId: 3, Day: 'Wednesday'},
+              {
+                index: 2,
+                DayRoutineId: 2,
+                Day: 'Monday',
+                ExerciseIds: [20, 21, 22, 23, 24, 25, 26, 27, 13, 28],
+              },
+              {
+                index: 3,
+                DayRoutineId: 3,
+                Day: 'Wednesday',
+                ExerciseIds: [40, 41, 42, 43, 44, 45, 46, 47, 13, 28],
+              },
             ],
           },
         ],
