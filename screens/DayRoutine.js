@@ -12,13 +12,11 @@ import {
   Keyboard,
 } from 'react-native';
 import {Colors} from '../Colors';
-import ExercisesController from '../controllers/ExercisesController';
 import Collapsible from '../components/Collapsible';
 
 let saveChanges;
 
 function DayRoutine({navigation}) {
-  const [DayRoutine, setDayRoutine] = useState([]);
   const [daysExercises, setdaysExercises] = useState([]);
   const [FocusInitialValue, setFocusInitialValue] = useState('');
 
@@ -27,8 +25,9 @@ function DayRoutine({navigation}) {
   const FocusedFieldname = useRef('');
 
   const IsInputFocused = useRef(false);
-
-  const exercises = useRef([]);
+  const DayRoutineRef = useRef({});
+  const inputRefs = useRef({});
+  const inputRef = useRef(null);
 
   const handleBackButtonClick = () => {
     console.log('Back Pressed');
@@ -37,18 +36,19 @@ function DayRoutine({navigation}) {
   };
 
   useEffect(() => {
-    const _DayRoutine = navigation.getParam('DayRoutine');
-    setDayRoutine(_DayRoutine);
-    getDaysExercises(_DayRoutine.ExerciseIds);
+    const DayRoutine = navigation.getParam('DayRoutine');
+    setdaysExercises(DayRoutine.Exercises);
+    DayRoutineRef.current = JSON.parse(JSON.stringify(DayRoutine));
 
     // handle reverting value when hiding keyboard
     const keyboardDidHideListener = Keyboard.addListener(
       'keyboardDidHide',
       () => {
         if (IsInputFocused.current) {
+          console.log('kb hide event');
           // hiding the keyboard while input is focused
-          // reinitializes the data
-          getDaysExercises(_DayRoutine.ExerciseIds);
+          // blurs the input to avoid wrong type
+          inputRef.current.blur();
         }
       },
     );
@@ -65,17 +65,16 @@ function DayRoutine({navigation}) {
     };
   }, []);
 
-  const getDaysExercises = async exerciseIds => {
-    const Exercises = await ExercisesController.GetExercises();
-    let filteredExercises = [];
+  const onFocusInput = (ref, value, exerciseIndex, setIndex, fieldName) => {
+    setFocusInitialValue(value);
 
-    exerciseIds.forEach(id => {
-      const Exercise = Exercises.find(exercise => exercise.Id === id);
-      filteredExercises.push(Exercise);
-    });
+    inputRef.current = inputRefs.current[ref];
 
-    setdaysExercises(filteredExercises);
-    exercises.current = filteredExercises;
+    FocusedExerciseIndex.current = exerciseIndex;
+    FocusedSetIndex.current = setIndex;
+    FocusedFieldname.current = fieldName;
+
+    IsInputFocused.current = true;
   };
 
   const handleInputChange = (text, exerciseIndex, setIndex, fieldName) => {
@@ -87,6 +86,8 @@ function DayRoutine({navigation}) {
 
   const handleBlur = (value, exerciseIndex, setIndex, fieldName) => {
     IsInputFocused.current = false;
+
+    console.log('blur');
 
     if (value !== FocusInitialValue) {
       let _daysExercises = [...daysExercises];
@@ -108,22 +109,17 @@ function DayRoutine({navigation}) {
 
       _daysExercises[exerciseIndex].Sets[setIndex][fieldName] = newValue;
       setdaysExercises(_daysExercises);
-      exercises.current = _daysExercises;
+
+      const _DayRoutineRef = JSON.parse(JSON.stringify(DayRoutineRef.current));
+      _DayRoutineRef.Exercises = JSON.parse(JSON.stringify(_daysExercises));
+      console.log('updated exercises ');
+      DayRoutineRef.current = JSON.parse(JSON.stringify(_DayRoutineRef));
+      console.log('ref update: ', DayRoutineRef.current.Exercises[0]);
     }
   };
 
   saveChanges = () => {
     console.log(daysExercises[0].Sets);
-  };
-
-  const onFocusInput = (value, exerciseIndex, setIndex, fieldName) => {
-    setFocusInitialValue(value);
-
-    FocusedExerciseIndex.current = exerciseIndex;
-    FocusedSetIndex.current = setIndex;
-    FocusedFieldname.current = fieldName;
-
-    IsInputFocused.current = true;
   };
 
   return (
@@ -156,6 +152,11 @@ function DayRoutine({navigation}) {
                       <TextInput
                         keyboardType={'numeric'}
                         selectTextOnFocus={true}
+                        ref={el =>
+                          (inputRefs.current[
+                            `${exerciseIndex}${setIndex}Reps`
+                          ] = el)
+                        }
                         style={{
                           borderColor: 'gray',
                           borderWidth: 1,
@@ -167,8 +168,9 @@ function DayRoutine({navigation}) {
                           paddingTop: 10,
                         }}
                         value={`${set.Reps}`}
-                        onFocus={() =>
+                        onFocus={e =>
                           onFocusInput(
+                            `${exerciseIndex}${setIndex}Reps`,
                             `${set.Reps}`,
                             exerciseIndex,
                             setIndex,
@@ -197,6 +199,11 @@ function DayRoutine({navigation}) {
                       <TextInput
                         keyboardType={'numeric'}
                         selectTextOnFocus={true}
+                        ref={el =>
+                          (inputRefs.current[
+                            `${exerciseIndex}${setIndex}Weights`
+                          ] = el)
+                        }
                         style={{
                           borderColor: 'gray',
                           borderWidth: 1,
@@ -208,8 +215,9 @@ function DayRoutine({navigation}) {
                           paddingTop: 10,
                         }}
                         value={`${set.WeightsKg}`}
-                        onFocus={() =>
+                        onFocus={e =>
                           onFocusInput(
+                            `${exerciseIndex}${setIndex}Weights`,
                             `${set.WeightsKg}`,
                             exerciseIndex,
                             setIndex,

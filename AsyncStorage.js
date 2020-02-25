@@ -310,6 +310,92 @@ export const initMockStorage = async () => {
                 DayRoutineId: 1,
                 Day: 'Saturday',
                 ExerciseIds: [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 28],
+                Exercises: [
+                  {
+                    Name: 'Squat',
+                    Sets: [
+                      {SetNumber: 1, Reps: 12, WeightsKg: 40},
+                      {SetNumber: 2, Reps: 8, WeightsKg: 60},
+                      {SetNumber: 3, Reps: 6, WeightsKg: 70},
+                    ],
+                  },
+                  {
+                    Name: 'Bench Press',
+                    Sets: [
+                      {SetNumber: 1, Reps: 10, WeightsKg: 40},
+                      {SetNumber: 2, Reps: 8, WeightsKg: 60},
+                      {SetNumber: 3, Reps: 6, WeightsKg: 70},
+                    ],
+                  },
+                  {
+                    Name: 'Lat Pull Down',
+                    Sets: [
+                      {SetNumber: 1, Reps: 8, WeightsKg: 60},
+                      {SetNumber: 2, Reps: 6, WeightsKg: 60},
+                      {SetNumber: 3, Reps: 6, WeightsKg: 60},
+                    ],
+                  },
+                  {
+                    Name: 'Leg Curl',
+                    Sets: [
+                      {SetNumber: 1, Reps: 6, WeightsKg: 35},
+                      {SetNumber: 2, Reps: 6, WeightsKg: 35},
+                      {SetNumber: 3, Reps: 6, WeightsKg: 35},
+                    ],
+                  },
+                  {
+                    Name: 'Upright Row',
+                    Sets: [
+                      {SetNumber: 1, Reps: 6, WeightsKg: 40},
+                      {SetNumber: 2, Reps: 6, WeightsKg: 40},
+                    ],
+                  },
+                  {
+                    Name: 'Skullcrusher',
+                    MuscleGroup: ['Triceps'],
+                    Sets: [
+                      {SetNumber: 1, Reps: 6, WeightsKg: 20},
+                      {SetNumber: 2, Reps: 6, WeightsKg: 20},
+                    ],
+                  },
+                  {
+                    Name: 'Barbell Curl',
+                    Sets: [
+                      {SetNumber: 1, Reps: 8, WeightsKg: 20},
+                      {SetNumber: 2, Reps: 6, WeightsKg: 25},
+                    ],
+                  },
+                  {
+                    Name: 'Barbell Shrug',
+                    Sets: [
+                      {SetNumber: 1, Reps: 6, WeightsKg: 25},
+                      {SetNumber: 2, Reps: 6, WeightsKg: 25},
+                    ],
+                  },
+                  {
+                    Name: 'Weighted Knee Raise',
+                    Sets: [
+                      {SetNumber: 1, Reps: 8, WeightsKg: 10},
+                      {SetNumber: 2, Reps: 8, WeightsKg: 10},
+                      {SetNumber: 3, Reps: 8, WeightsKg: 10},
+                    ],
+                  },
+                  {
+                    Name: 'Weighted Crunches',
+                    Sets: [
+                      {SetNumber: 1, Reps: 8, WeightsKg: 10},
+                      {SetNumber: 2, Reps: 8, WeightsKg: 10},
+                      {SetNumber: 3, Reps: 8, WeightsKg: 10},
+                    ],
+                  },
+                  {
+                    Name: 'Weighted Leg Raises',
+                    Sets: [
+                      {SetNumber: 1, Reps: 8, WeightsKg: 10},
+                      {SetNumber: 2, Reps: 8, WeightsKg: 10},
+                    ],
+                  },
+                ],
               },
               {
                 index: 2,
