@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   TextInput,
   BackHandler,
+  Keyboard,
 } from 'react-native';
 import {Colors} from '../Colors';
 import ExercisesController from '../controllers/ExercisesController';
@@ -21,6 +22,14 @@ function DayRoutine({navigation}) {
   const [daysExercises, setdaysExercises] = useState([]);
   const [FocusInitialValue, setFocusInitialValue] = useState('');
 
+  const FocusedExerciseIndex = useRef(null);
+  const FocusedSetIndex = useRef(null);
+  const FocusedFieldname = useRef('');
+
+  const IsInputFocused = useRef(false);
+
+  const exercises = useRef([]);
+
   const handleBackButtonClick = () => {
     console.log('Back Pressed');
     // navigation.goBack(null);
@@ -30,40 +39,55 @@ function DayRoutine({navigation}) {
   useEffect(() => {
     const _DayRoutine = navigation.getParam('DayRoutine');
     setDayRoutine(_DayRoutine);
-
     getDaysExercises(_DayRoutine.ExerciseIds);
 
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    // handle reverting value when hiding keyboard
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        if (IsInputFocused.current) {
+          // hiding the keyboard while input is focused
+          // reinitializes the data
+          getDaysExercises(_DayRoutine.ExerciseIds);
+        }
+      },
+    );
+
+    // BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
 
     return () => {
       //
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackButtonClick,
-      );
+      //   BackHandler.removeEventListener(
+      //     'hardwareBackPress',
+      //     handleBackButtonClick,
+      //   );
+      keyboardDidHideListener.remove();
     };
   }, []);
 
   const getDaysExercises = async exerciseIds => {
     const Exercises = await ExercisesController.GetExercises();
+    let filteredExercises = [];
 
-    const daysExercises = Exercises.filter(exercise =>
-      exerciseIds.includes(exercise.Id),
-    );
+    exerciseIds.forEach(id => {
+      const Exercise = Exercises.find(exercise => exercise.Id === id);
+      filteredExercises.push(Exercise);
+    });
 
-    setdaysExercises(daysExercises);
-
-    console.log(daysExercises[0]);
+    setdaysExercises(filteredExercises);
+    exercises.current = filteredExercises;
   };
 
   const handleInputChange = (text, exerciseIndex, setIndex, fieldName) => {
     const _daysExercises = [...daysExercises];
-    let value = text === '' ? '0' : text;
-    _daysExercises[exerciseIndex].Sets[setIndex][fieldName] = value;
+
+    _daysExercises[exerciseIndex].Sets[setIndex][fieldName] = text;
     setdaysExercises(_daysExercises);
   };
 
   const handleBlur = (value, exerciseIndex, setIndex, fieldName) => {
+    IsInputFocused.current = false;
+
     if (value !== FocusInitialValue) {
       let _daysExercises = [...daysExercises];
       let newValue;
@@ -84,6 +108,7 @@ function DayRoutine({navigation}) {
 
       _daysExercises[exerciseIndex].Sets[setIndex][fieldName] = newValue;
       setdaysExercises(_daysExercises);
+      exercises.current = _daysExercises;
     }
   };
 
@@ -91,14 +116,24 @@ function DayRoutine({navigation}) {
     console.log(daysExercises[0].Sets);
   };
 
+  const onFocusInput = (value, exerciseIndex, setIndex, fieldName) => {
+    setFocusInitialValue(value);
+
+    FocusedExerciseIndex.current = exerciseIndex;
+    FocusedSetIndex.current = setIndex;
+    FocusedFieldname.current = fieldName;
+
+    IsInputFocused.current = true;
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView style={styles.container}>
-        <ScrollView keyExtractor={item => `${item.Id}`}>
+        <ScrollView>
           {daysExercises.length ? (
             daysExercises.map((item, exerciseIndex) => (
-              <Collapsible key={item.Id} title={item.Name}>
+              <Collapsible key={exerciseIndex} title={item.Name}>
                 <View style={{flexDirection: 'row'}}>
                   <Text style={{width: 70}}>Set#</Text>
                   <Text style={{width: 100}}>Reps</Text>
@@ -131,9 +166,15 @@ function DayRoutine({navigation}) {
                           fontSize: 18,
                           paddingTop: 10,
                         }}
-                        onEndEditing={() => console.log('onEndEditing')}
                         value={`${set.Reps}`}
-                        onFocus={() => setFocusInitialValue(`${set.Reps}`)}
+                        onFocus={() =>
+                          onFocusInput(
+                            `${set.Reps}`,
+                            exerciseIndex,
+                            setIndex,
+                            'Reps',
+                          )
+                        }
                         onChangeText={text =>
                           handleInputChange(
                             text,
@@ -167,7 +208,14 @@ function DayRoutine({navigation}) {
                           paddingTop: 10,
                         }}
                         value={`${set.WeightsKg}`}
-                        onFocus={() => setFocusInitialValue(`${set.WeightsKg}`)}
+                        onFocus={() =>
+                          onFocusInput(
+                            `${set.WeightsKg}`,
+                            exerciseIndex,
+                            setIndex,
+                            'WeightsKg',
+                          )
+                        }
                         onChangeText={text =>
                           handleInputChange(
                             text,
