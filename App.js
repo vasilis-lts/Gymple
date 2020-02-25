@@ -36,7 +36,7 @@ const RootStack = createStackNavigator(
     DayRoutine: DayRoutine,
   },
   {
-    initialRouteName: 'LoadingScreen',
+    initialRouteName: 'WorkoutList',
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: ThemeColors.dark.bodyContent,
