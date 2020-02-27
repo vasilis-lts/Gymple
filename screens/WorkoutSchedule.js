@@ -25,6 +25,7 @@ function WorkoutSchedule({navigation}) {
   const goToDayRoutine = item => {
     navigation.push('DayRoutine', {
       DayRoutine: item,
+      workoutId: Workout.id,
     });
   };
 

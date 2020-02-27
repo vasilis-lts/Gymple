@@ -13,12 +13,15 @@ import {
 } from 'react-native';
 import {Colors} from '../Colors';
 import Collapsible from '../components/Collapsible';
+import WorkoutsController from '../controllers/WorkoutsController';
+import LoadingModal from '../components/LoadingModal';
 
 let saveChanges;
 
 function DayRoutine({navigation}) {
   const [daysExercises, setdaysExercises] = useState([]);
   const [FocusInitialValue, setFocusInitialValue] = useState('');
+  const [ShowLoadingModal, setShowLoadingModal] = useState(false);
 
   const FocusedExerciseIndex = useRef(null);
   const FocusedSetIndex = useRef(null);
@@ -118,8 +121,19 @@ function DayRoutine({navigation}) {
     }
   };
 
-  saveChanges = () => {
-    console.log(daysExercises[0].Sets);
+  saveChanges = async () => {
+    setShowLoadingModal(true);
+
+    const WorkoutUpdate = await WorkoutsController.UpdateWorkoutByDayRoutine(
+      DayRoutineRef.current,
+      navigation.getParam('workoutId'),
+    );
+
+    setShowLoadingModal(false);
+
+    if (WorkoutUpdate === 'success') {
+      console.log('Update successfull');
+    }
   };
 
   return (
@@ -251,6 +265,7 @@ function DayRoutine({navigation}) {
               <ActivityIndicator size="large" color="#0000ff" />
             </View>
           )}
+          {ShowLoadingModal && <LoadingModal />}
         </ScrollView>
       </SafeAreaView>
     </>

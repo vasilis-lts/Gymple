@@ -33,5 +33,32 @@ const WorkoutsController = {
       return null;
     }
   },
+  UpdateWorkoutByDayRoutine: async (dayRoutine, workoutId) => {
+    const Workouts = await WorkoutsController.GetWorkouts();
+
+    let WorkoutToUpdate = Workouts.find(workout => workout.id === workoutId);
+
+    WorkoutToUpdate.Schedule[dayRoutine.index - 1] = dayRoutine;
+
+    console.log(WorkoutToUpdate.Schedule[dayRoutine.index - 1].Exercises[0]);
+
+    const indexToUpdate = Workouts.findIndex(
+      workout => workout.id === workoutId,
+    );
+    console.log('indexToUpdate', indexToUpdate);
+    Workouts[indexToUpdate].WorkoutToUpdate;
+
+    try {
+      await AsyncStorage.setItem(
+        'AdminUser',
+        JSON.stringify({
+          Workouts,
+        }),
+      );
+      return 'success';
+    } catch (error) {
+      return error;
+    }
+  },
 };
 export default WorkoutsController;
