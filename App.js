@@ -21,9 +21,11 @@ import ViewExercisesScreen from './screens/ViewExercisesScreen';
 import ExerciseDetails from './screens/ExerciseDetails';
 import WorkoutSchedule from './screens/WorkoutSchedule';
 import DayRoutine from './screens/DayRoutine';
+import MainScreen from './screens/MainScreen';
 
 const RootStack = createStackNavigator(
   {
+    MainScreen: {screen: MainScreen},
     WorkoutList: {screen: WorkoutList},
     DailyWorkoutForm: DailyWorkoutForm,
     CreateWorkoutWizard: CreateWorkoutWizard,
@@ -36,7 +38,7 @@ const RootStack = createStackNavigator(
     DayRoutine: DayRoutine,
   },
   {
-    initialRouteName: 'WorkoutList',
+    initialRouteName: 'MainScreen',
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: ThemeColors.dark.bodyContent,

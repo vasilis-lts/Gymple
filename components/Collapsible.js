@@ -39,6 +39,7 @@ const styles = StyleSheet.create({
     color: Colors.White,
     fontWeight: 'bold',
     fontSize: 20,
+    fontFamily: 'Roboto-Regular',
   },
   button: {},
   buttonImage: {
